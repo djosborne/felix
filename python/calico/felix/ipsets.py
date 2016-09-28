@@ -101,7 +101,7 @@ class IpsetManager(ReferenceManager):
             _log.info("Delaying startup of ipset for %s because datamodel is "
                       "not in sync.", obj_id)
 
-    def _on_object_started(self, ipset_id, active_ipset): #uncovered
+    def _on_object_started(self, ipset_id, active_ipset):
         _log.debug("RefCountedIpsetActor actor for %s started", ipset_id)
         # Fill the ipset in with its members, this will trigger its first
         # programming, after which it will call us back to tell us it is ready.
@@ -158,7 +158,7 @@ class IpsetManager(ReferenceManager):
             self._maybe_start_all()
 
     @actor_message()
-    def cleanup(self): #uncovered
+    def cleanup(self):
         """
         Clean up left-over ipsets that existed at start-of-day.
         """
@@ -168,8 +168,11 @@ class IpsetManager(ReferenceManager):
         # Filter deletion candidates to only ipsets that we could have created.
         felix_ipsets = set()
         for ipset in all_ipsets:
+            print "ipset: %s" % ipset
             for prefix in ALL_FELIX_PREFIXES[self.ip_type]:
+                print "prefix: %s" % prefix
                 if ipset.startswith(prefix):
+                    print "matched"
                     felix_ipsets.add(ipset)
 
         whitelist = set()
@@ -182,6 +185,7 @@ class IpsetManager(ReferenceManager):
             # Ask the ipset for all the names it may use and whitelist.
             whitelist.update(ipset.owned_ipset_names())
         _log.debug("Whitelisted ipsets: %s", whitelist)
+        print "Whitelisted ipsets: %s" % whitelist
         ipsets_to_delete = felix_ipsets - whitelist
         _log.debug("Deleting ipsets: %s", ipsets_to_delete)
         # Delete the ipsets before we return.  We can't queue these up since

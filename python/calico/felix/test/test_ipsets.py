@@ -574,7 +574,6 @@ class TestIpsetManager(BaseTestCase):
     def on_ref_acquired(self, tag_id, ipset):
         self.acquired_refs[tag_id] = ipset
 
-    @skip("Golang rewrite")
     @patch("calico.felix.ipsets.list_ipset_names", autospec=True)
     @patch("calico.felix.futils.check_call", autospec=True)
     def test_cleanup(self, m_check_call, m_list_ipsets):
@@ -604,16 +603,18 @@ class TestIpsetManager(BaseTestCase):
         # Return mix of expected and unexpected ipsets.
         m_list_ipsets.return_value = [
             "not-felix-foo",
-            "felix-v6-foo",
-            "felix-v6-bazzle",
-            "felix-v4-foo",
-            "felix-v4-bar",
-            "felix-v4-baz",
-            "felix-v4-biff",
+            "felix-6-foo",
+            "felix-6-bazzle",
+            "felix-4-foo",
+            "felix-4-bar",
+            "felix-4-baz",
+            "felix-4-biff",
         ]
         m_check_call.side_effect = iter([
             # Exception on any individual call should be ignored.
             FailedSystemCall("Dummy", [], None, None, None),
+            None,
+            None,
             None,
         ])
         self.mgr.cleanup(async=True)
@@ -623,8 +624,8 @@ class TestIpsetManager(BaseTestCase):
         # assert_has_calls would ignore extra calls.
         self.assertEqual(sorted(m_check_call.mock_calls),
                          sorted([
-                             call(["ipset", "destroy", "felix-v4-biff"]),
-                             call(["ipset", "destroy", "felix-v4-baz"]),
+                             call(["ipset", "destroy", "felix-4-biff"]),
+                             call(["ipset", "destroy", "felix-4-baz"]),
                          ]))
 
     @skip("Golang rewrite")
