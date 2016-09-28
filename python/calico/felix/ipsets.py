@@ -82,7 +82,7 @@ class IpsetManager(ReferenceManager):
         # values.
         self._datamodel_in_sync = False
 
-    def _create(self, ipset_id): #uncovered
+    def _create(self, ipset_id):
         _log.info("Creating ipset for pre-calculated selector %s",
                   ipset_id)
         ipset_name = ipset_id[:MAX_NAME_LENGTH]

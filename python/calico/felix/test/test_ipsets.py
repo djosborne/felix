@@ -161,14 +161,13 @@ class TestIpsetManager(BaseTestCase):
         self.created_refs[tag_or_sel].append(ipset)
         return ipset
 
-    @skip("Golang rewrite")
     def test_create(self):
         with patch("calico.felix.ipsets.Ipset") as m_Ipset:
             mgr = IpsetManager(IPV4, self.config)
             tag_ipset = mgr._create("tagid")
         self.assertEqual(tag_ipset.name_stem, "tagid")
-        m_Ipset.assert_called_once_with('felix-v4-tagid',
-                                        'felix-tmp-v4-tagid',
+        m_Ipset.assert_called_once_with('felix-4-tagid',
+                                        'felix-4ttagid',
                                         'inet', 'hash:ip',
                                         max_elem=1234)
 
