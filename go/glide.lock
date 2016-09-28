@@ -1,5 +1,5 @@
-hash: 5210da21dfd1fd09e6ceb3f48f4a119381138acdbf7cfeb486a5b54c2d6e62b4
-updated: 2016-09-22T18:05:41.505518812+01:00
+hash: 059cd68085417721276b251b71811612daa86cb7a58082839ec2f92b887b01a4
+updated: 2016-09-28T11:33:51.901854315+01:00
 imports:
 - name: github.com/coreos/etcd
   version: e93ee6179c64cac4d8764870b8267f05c1618c40
@@ -54,7 +54,7 @@ imports:
 - name: github.com/Sirupsen/logrus
   version: 4b6ea7319e214d98c938f12692336f7ca9348d6b
 - name: github.com/tigera/libcalico-go
-  version: a618167c65099a7293d6873ba46199a8671584ab
+  version: 01ed25b6535a6baef302f30d4a54e5f88e9b2389
   repo: https://github.com/fasaxc/libcalico-go.git
   subpackages:
   - lib
@@ -84,7 +84,7 @@ imports:
   subpackages:
   - context
 - name: golang.org/x/sys
-  version: 30de6d19a3bd89a5f38ae4028e23aaa5582648af
+  version: 9c60d1c508f5134d1ca726b4641db998f2523357
   subpackages:
   - unix
 - name: gopkg.in/go-playground/validator.v8
@@ -109,4 +109,4 @@ testImports:
   - matchers/support/goraph/util
   - types
 - name: gopkg.in/yaml.v2
-  version: 31c299268d302dd0aa9a0dcf765a3d58971ac83f
+  version: 53feefa2559fb8dfa8d81baad31be332c97d6c77
