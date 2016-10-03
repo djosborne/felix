@@ -1,4 +1,4 @@
-all: pyinstaller deb rpm
+all: pyinstaller deb rpm felix-docker-image
 
 DEB_VERSION:=$(shell grep calico debian/changelog | \
                      head -n 1 | cut -d '(' -f 2 | cut -d ')' -f 1 | \
