@@ -5,7 +5,7 @@ DEB_VERSION:=$(shell grep calico debian/changelog | \
                      cut -d '-' -f 1)
 DEB_VERSION_TRUSTY:=$(shell echo $(DEB_VERSION) | sed "s/__STREAM__/trusty/g")
 DEB_VERSION_XENIAL:=$(shell echo $(DEB_VERSION) | sed "s/__STREAM__/xenial/g")
-PY_VERSION:=$(shell python2.7 python/setup.py --version 2>>/dev/null)
+PY_VERSION:=$(shell cd python; python2.7 setup.py --version 2>>/dev/null)
 GIT_COMMIT:=$(shell git rev-parse HEAD)
 GIT_COMMIT_SHORT:=$(shell git rev-parse --short HEAD)
 GIT_DESCRIPTION:=$(shell git describe --tags)

@@ -28,3 +28,4 @@ import:
 - package: github.com/Sirupsen/logrus
   version: ^0.10.0
 - package: github.com/kardianos/osext
+- package: github.com/mipearson/rfw

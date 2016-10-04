@@ -25,6 +25,7 @@ import (
 	"github.com/projectcalico/felix/go/felix/calc"
 	"github.com/projectcalico/felix/go/felix/config"
 	_ "github.com/projectcalico/felix/go/felix/config"
+	"github.com/projectcalico/felix/go/felix/logutils"
 	"github.com/projectcalico/felix/go/felix/proto"
 	"github.com/projectcalico/felix/go/felix/status"
 	"github.com/tigera/libcalico-go/lib/backend"
@@ -50,16 +51,9 @@ Options:
 `
 
 func main() {
-	// Intitialise logging early so we can trace out config parsing.
-	logLevelScreen := log.FatalLevel
-	if rawLogLevel := os.Getenv("FELIX_LOGSEVERITYSCREEN"); rawLogLevel != "" {
-		parsedLevel, err := log.ParseLevel(rawLogLevel)
-		if err == nil {
-			logLevelScreen = parsedLevel
-		}
-	}
-	log.SetLevel(logLevelScreen)
-	log.Infof("Log level set to %v", logLevelScreen)
+	// Special-case handling for environment variable-configured logging:
+	// Initialise early so we can trace out config parsing.
+	logutils.ConfigureEarlyLogging()
 
 	// Parse command-line args.
 	version := ("Version:    " + buildinfo.Version + "\n" +
@@ -70,11 +64,11 @@ func main() {
 		println(usage)
 		log.Fatalf("Failed to parse usage, exiting: %v", err)
 	}
-
 	log.Infof("Command line arguments: %v", arguments)
 
-	// Load the configuration from all the different sources and merge.
-	// Keep retrying on failure.
+	// Load the configuration from all the different sources including the
+	// datastore and merge. Keep retrying on failure.  We'll sit in this
+	// loop until the datastore is ready.
 	log.Infof("Loading configuration...")
 	var datastore bapi.Client
 	var configParams *config.Config
@@ -122,24 +116,12 @@ configRetry:
 			time.Sleep(1 * time.Second)
 			continue configRetry
 		}
-		break
+		break configRetry
 	}
 
-	// If we get here, we've loaded the configuration and we're ready to
-	// start the dataplane driver.  Update the log level.
-	if configParams.LogSeverityScreen != "" {
-		parsedLevel, err := log.ParseLevel(configParams.LogSeverityScreen)
-		if err == nil {
-			logLevelScreen = parsedLevel
-		}
-	} else {
-		logLevelScreen = log.PanicLevel
-	}
-	log.SetLevel(logLevelScreen)
-	log.SetFormatter(&log.TextFormatter{
-		DisableColors: true,
-		FullTimestamp: true,
-	})
+	// If we get here, we've loaded the configuration successfully.
+	// Update log levels before we do anything else.
+	logutils.ConfigureLogging(configParams)
 	log.Infof("Successfully loaded configuration: %+v", configParams)
 
 	// Create a pair of pipes, one for sending messages to the dataplane

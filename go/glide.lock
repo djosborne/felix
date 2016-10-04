@@ -1,5 +1,5 @@
-hash: a74fb1757ac43d2b2225356c6e9b9ceb63e8995590ff2a952711164dcd8a0810
-updated: 2016-10-03T14:15:23.821595589+01:00
+hash: 4c91993673e128c627f0cdc3bf97e46235b66f116a4b302682cb0e54cf860209
+updated: 2016-10-04T14:27:00.094931224+01:00
 imports:
 - name: github.com/coreos/etcd
   version: e93ee6179c64cac4d8764870b8267f05c1618c40
@@ -34,6 +34,8 @@ imports:
   version: c2c54e542fb797ad986b31721e1baedf214ca413
 - name: github.com/kelseyhightower/envconfig
   version: 1e291572dcb9ba673cdcdb15e0f422702415ebaf
+- name: github.com/mipearson/rfw
+  version: b66ec87bd85055de3f749a8640e9e4c8053052e4
 - name: github.com/onsi/ginkgo
   version: 7b6efc7d7b052568b49ac02d3141c9d7a5a494a4
   subpackages:
@@ -55,6 +57,8 @@ imports:
   version: 0aa62d5ddceb50dbcb909d790b5345affd3669b6
 - name: github.com/Sirupsen/logrus
   version: 4b6ea7319e214d98c938f12692336f7ca9348d6b
+  subpackages:
+  - hooks/syslog
 - name: github.com/tigera/libcalico-go
   version: 01ed25b6535a6baef302f30d4a54e5f88e9b2389
   repo: https://github.com/fasaxc/libcalico-go.git
@@ -68,6 +72,7 @@ imports:
   - lib/backend/etcd
   - lib/backend/model
   - lib/errors
+  - lib/ginkgoutils
   - lib/hash
   - lib/hwm
   - lib/net
