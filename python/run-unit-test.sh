@@ -25,7 +25,14 @@ if [ -n "$VIRTUAL_ENV" ]; then
   exit 1
 fi
 
+# Set up the tox venv so that we can use its version of coverage.  This
+# avoids errors if the system coverage binary is not present or is of a
+# different version.
+tox --notest "$@"
+
+source .tox/py27/bin/activate
 coverage erase
+deactivate
 
 tox "$@"
 
