@@ -17,6 +17,7 @@ help:
 	@echo "  make pyinstaller   Build pyinstaller bundle in ./dist."
 	@echo "  make deb           Build debs in ./dist."
 	@echo "  make rpm           Build rpms in ./dist."
+	@echo "  make felix-docker-image  calico/felix docker image."
 	@echo
 	@echo "Tests:"
 	@echo
