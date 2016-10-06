@@ -122,7 +122,7 @@ func ConfigureLogging(configParams *config.Config) {
 		priority := syslog.LOG_USER | syslog.LOG_INFO
 		tag := "calico-felix"
 		if hook, err := logrus_syslog.NewSyslogHook(net, addr, priority, tag); err != nil {
-			log.WithError(err).Fatal("Failed to connect to syslog")
+			log.WithError(err).WithField("level", configParams.LogSeveritySys).Error("Failed to connect to syslog")
 		} else {
 			syslogLevels := filterLevels(logLevelSyslog)
 			levHook := &LeveledHook{
