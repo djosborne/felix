@@ -33,7 +33,7 @@ const (
 	MinIptablesMarkBits = 2
 )
 
-type metadata struct {
+type Metadata struct {
 	Name              string
 	Default           interface{}
 	ZeroValue         interface{}
@@ -42,28 +42,28 @@ type metadata struct {
 	Local             bool
 }
 
-func (m *metadata) getMetadata() *metadata {
+func (m *Metadata) GetMetadata() *Metadata {
 	return m
 }
 
-func (m *metadata) parseFailed(raw, msg string) error {
+func (m *Metadata) parseFailed(raw, msg string) error {
 	return errors.New(
 		fmt.Sprintf("Failed to parse config parameter %v; value %#v: %v",
 			m.Name, raw, msg))
 }
 
-func (m *metadata) setDefault(config *Config) {
+func (m *Metadata) setDefault(config *Config) {
 	log.Debugf("Defaulting: %v to %v", m.Name, m.Default)
 	field := reflect.ValueOf(config).Elem().FieldByName(m.Name)
 	value := reflect.ValueOf(m.Default)
 	field.Set(value)
 }
 
-type boolParam struct {
-	metadata
+type BoolParam struct {
+	Metadata
 }
 
-func (p *boolParam) Parse(raw string) (interface{}, error) {
+func (p *BoolParam) Parse(raw string) (interface{}, error) {
 	switch strings.ToLower(raw) {
 	case "true", "1", "yes", "y", "t":
 		return true, nil
@@ -73,13 +73,13 @@ func (p *boolParam) Parse(raw string) (interface{}, error) {
 	return nil, p.parseFailed(raw, "invalid boolean")
 }
 
-type intParam struct {
-	metadata
+type IntParam struct {
+	Metadata
 	Min int
 	Max int
 }
 
-func (p *intParam) Parse(raw string) (interface{}, error) {
+func (p *IntParam) Parse(raw string) (interface{}, error) {
 	value, err := strconv.ParseInt(raw, 0, 64)
 	if err != nil {
 		err = p.parseFailed(raw, "invalid int")
@@ -96,11 +96,11 @@ func (p *intParam) Parse(raw string) (interface{}, error) {
 	return result, err
 }
 
-type int32Param struct {
-	metadata
+type Int32Param struct {
+	Metadata
 }
 
-func (p *int32Param) Parse(raw string) (interface{}, error) {
+func (p *Int32Param) Parse(raw string) (interface{}, error) {
 	value, err := strconv.ParseInt(raw, 0, 32)
 	if err != nil {
 		err = p.parseFailed(raw, "invalid 32-bit int")
@@ -110,11 +110,11 @@ func (p *int32Param) Parse(raw string) (interface{}, error) {
 	return result, err
 }
 
-type floatParam struct {
-	metadata
+type FloatParam struct {
+	Metadata
 }
 
-func (p *floatParam) Parse(raw string) (result interface{}, err error) {
+func (p *FloatParam) Parse(raw string) (result interface{}, err error) {
 	result, err = strconv.ParseFloat(raw, 64)
 	if err != nil {
 		err = p.parseFailed(raw, "invalid float")
@@ -123,13 +123,13 @@ func (p *floatParam) Parse(raw string) (result interface{}, err error) {
 	return
 }
 
-type regexpParam struct {
-	metadata
+type RegexpParam struct {
+	Metadata
 	Regexp *regexp.Regexp
 	Msg    string
 }
 
-func (p *regexpParam) Parse(raw string) (result interface{}, err error) {
+func (p *RegexpParam) Parse(raw string) (result interface{}, err error) {
 	if !p.Regexp.MatchString(raw) {
 		err = p.parseFailed(raw, p.Msg)
 	} else {
@@ -138,13 +138,13 @@ func (p *regexpParam) Parse(raw string) (result interface{}, err error) {
 	return
 }
 
-type fileParam struct {
-	metadata
+type FileParam struct {
+	Metadata
 	MustExist  bool
 	Executable bool
 }
 
-func (p *fileParam) Parse(raw string) (interface{}, error) {
+func (p *FileParam) Parse(raw string) (interface{}, error) {
 	if p.Executable {
 		// Special case: for executable files, we search our directory
 		// and the system path.
@@ -193,11 +193,11 @@ func (p *fileParam) Parse(raw string) (interface{}, error) {
 	return raw, nil
 }
 
-type ipv4Param struct {
-	metadata
+type Ipv4Param struct {
+	Metadata
 }
 
-func (p *ipv4Param) Parse(raw string) (result interface{}, err error) {
+func (p *Ipv4Param) Parse(raw string) (result interface{}, err error) {
 	result = net.ParseIP(raw)
 	if result == nil {
 		err = p.parseFailed(raw, "invalid IP")
@@ -205,11 +205,11 @@ func (p *ipv4Param) Parse(raw string) (result interface{}, err error) {
 	return
 }
 
-type portListParam struct {
-	metadata
+type PortListParam struct {
+	Metadata
 }
 
-func (p *portListParam) Parse(raw string) (interface{}, error) {
+func (p *PortListParam) Parse(raw string) (interface{}, error) {
 	result := []int{}
 	for _, portStr := range strings.Split(raw, ",") {
 		port, err := strconv.Atoi(portStr)
@@ -226,46 +226,55 @@ func (p *portListParam) Parse(raw string) (interface{}, error) {
 	return result, nil
 }
 
-type endpointListParam struct {
-	metadata
+type EndpointListParam struct {
+	Metadata
 }
 
-func (p *endpointListParam) Parse(raw string) (result interface{}, err error) {
+func (p *EndpointListParam) Parse(raw string) (result interface{}, err error) {
 	value := strings.Split(raw, ",")
 	scheme := ""
+	resultSlice := []string{}
 	for _, endpoint := range value {
 		endpoint = strings.Trim(endpoint, " ")
-		var url *url.URL
-		url, err = url.Parse(endpoint)
+		if len(endpoint) == 0 {
+			continue
+		}
+		var u *url.URL
+		u, err = url.Parse(endpoint)
 		if err != nil {
 			err = p.parseFailed(raw,
 				fmt.Sprintf("%v is not a valid URL", endpoint))
 			return
 		}
-		if scheme != "" && url.Scheme != scheme {
+		if scheme != "" && u.Scheme != scheme {
 			err = p.parseFailed(raw,
 				"all endpoints must have the same scheme")
 			return
 		}
-		if url.Opaque != "" || url.User != nil || url.Path != "" ||
-			url.RawPath != "" || url.RawQuery != "" ||
-			url.Fragment != "" {
+		if u.Path == "" {
+			u.Path = "/"
+		}
+		if u.Opaque != "" || u.User != nil || u.Path != "/" ||
+			u.RawPath != "" || u.RawQuery != "" ||
+			u.Fragment != "" {
+			log.WithField("url", fmt.Sprintf("%#v", u)).Error(
+				"Unsupported URL part")
 			err = p.parseFailed(raw,
 				"endpoint contained unsupported URL part; "+
 					"expected http(s)://hostname:port only.")
 			return
 		}
-		value = append(value, endpoint)
+		resultSlice = append(resultSlice, u.String())
 	}
-	result = value
+	result = resultSlice
 	return
 }
 
-type markBitmaskParam struct {
-	metadata
+type MarkBitmaskParam struct {
+	Metadata
 }
 
-func (p *markBitmaskParam) Parse(raw string) (interface{}, error) {
+func (p *MarkBitmaskParam) Parse(raw string) (interface{}, error) {
 	value, err := strconv.ParseUint(raw, 0, 32)
 	if err != nil {
 		log.Warningf("Failed to parse %#v as an int: %v", raw, err)
@@ -286,12 +295,12 @@ func (p *markBitmaskParam) Parse(raw string) (interface{}, error) {
 	return result, err
 }
 
-type oneofListParam struct {
-	metadata
+type OneofListParam struct {
+	Metadata
 	lowerCaseOptionsToCanonical map[string]string
 }
 
-func (p *oneofListParam) Parse(raw string) (result interface{}, err error) {
+func (p *OneofListParam) Parse(raw string) (result interface{}, err error) {
 	result, ok := p.lowerCaseOptionsToCanonical[strings.ToLower(raw)]
 	if !ok {
 		err = p.parseFailed(raw, "unknown option")

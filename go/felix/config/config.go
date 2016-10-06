@@ -184,7 +184,7 @@ func (config *Config) resolve() (changed bool, err error) {
 					"Ignoring unknown config param.")
 				continue valueLoop
 			}
-			metadata := param.getMetadata()
+			metadata := param.GetMetadata()
 			name := metadata.Name
 			if metadata.Local && !source.Local() {
 				log.Warningf("Ignoring local-only configuration for %v from %v",
@@ -314,7 +314,7 @@ func loadParams() {
 		var err error
 		switch kind {
 		case "bool":
-			param = &boolParam{}
+			param = &BoolParam{}
 		case "int":
 			min := minInt
 			max := maxInt
@@ -329,32 +329,32 @@ func loadParams() {
 					log.Fatalf("Failed to parse max value for %v", field.Name)
 				}
 			}
-			param = &intParam{Min: min, Max: max}
+			param = &IntParam{Min: min, Max: max}
 		case "int32":
-			param = &int32Param{}
+			param = &Int32Param{}
 		case "mark-bitmask":
-			param = &markBitmaskParam{}
+			param = &MarkBitmaskParam{}
 		case "float":
-			param = &floatParam{}
+			param = &FloatParam{}
 		case "iface-name":
-			param = &regexpParam{Regexp: IfaceNameRegexp,
+			param = &RegexpParam{Regexp: IfaceNameRegexp,
 				Msg: "invalid Linux interface name"}
 		case "file":
-			param = &fileParam{
+			param = &FileParam{
 				MustExist:  strings.Contains(kindParams, "must-exist"),
 				Executable: strings.Contains(kindParams, "executable"),
 			}
 		case "authority":
-			param = &regexpParam{Regexp: AuthorityRegexp,
+			param = &RegexpParam{Regexp: AuthorityRegexp,
 				Msg: "invalid URL authority"}
 		case "ipv4":
-			param = &ipv4Param{}
+			param = &Ipv4Param{}
 		case "endpoint-list":
-			param = &endpointListParam{}
+			param = &EndpointListParam{}
 		case "port-list":
-			param = &portListParam{}
+			param = &PortListParam{}
 		case "hostname":
-			param = &regexpParam{Regexp: HostnameRegexp,
+			param = &RegexpParam{Regexp: HostnameRegexp,
 				Msg: "invalid hostname"}
 		case "oneof":
 			options := strings.Split(kindParams, ",")
@@ -362,13 +362,13 @@ func loadParams() {
 			for _, option := range options {
 				lowerCaseToCanon[strings.ToLower(option)] = option
 			}
-			param = &oneofListParam{
+			param = &OneofListParam{
 				lowerCaseOptionsToCanonical: lowerCaseToCanon}
 		default:
 			log.Fatalf("Unknown type of parameter: %v", kind)
 		}
 
-		metadata := param.getMetadata()
+		metadata := param.GetMetadata()
 		metadata.Name = field.Name
 		metadata.ZeroValue = reflect.ValueOf(config).FieldByName(field.Name).Interface()
 		if strings.Index(flags, "non-zero") > -1 {
@@ -422,7 +422,7 @@ func New() *Config {
 }
 
 type param interface {
-	getMetadata() *metadata
+	GetMetadata() *Metadata
 	Parse(raw string) (result interface{}, err error)
 	setDefault(*Config)
 }
