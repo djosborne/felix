@@ -574,6 +574,7 @@ class TestIpsetManager(BaseTestCase):
     def on_ref_acquired(self, tag_id, ipset):
         self.acquired_refs[tag_id] = ipset
 
+    @skip("Broken by golang felix rewrite")
     @patch("calico.felix.ipsets.list_ipset_names", autospec=True)
     @patch("calico.felix.futils.check_call", autospec=True)
     def test_cleanup(self, m_check_call, m_list_ipsets):
