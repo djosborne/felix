@@ -19,9 +19,9 @@ import (
 	"github.com/projectcalico/felix/go/datastructures/labels"
 	"github.com/projectcalico/felix/go/datastructures/multidict"
 	"github.com/projectcalico/felix/go/datastructures/tags"
-	"github.com/tigera/libcalico-go/lib/backend/api"
-	"github.com/tigera/libcalico-go/lib/backend/model"
-	"github.com/tigera/libcalico-go/lib/selector"
+	"github.com/projectcalico/libcalico-go/lib/backend/api"
+	"github.com/projectcalico/libcalico-go/lib/backend/model"
+	"github.com/projectcalico/libcalico-go/lib/selector"
 	"reflect"
 )
 

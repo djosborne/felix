@@ -16,9 +16,9 @@ package calc
 
 import (
 	"github.com/Sirupsen/logrus"
-	"github.com/tigera/libcalico-go/lib/backend/api"
-	"github.com/tigera/libcalico-go/lib/backend/model"
-	"github.com/tigera/libcalico-go/lib/validator"
+	"github.com/projectcalico/libcalico-go/lib/backend/api"
+	"github.com/projectcalico/libcalico-go/lib/backend/model"
+	"github.com/projectcalico/libcalico-go/lib/validator"
 	"reflect"
 )
 

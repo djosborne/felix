@@ -19,8 +19,8 @@ import (
 	"github.com/projectcalico/felix/go/datastructures/ip"
 	"github.com/projectcalico/felix/go/datastructures/multidict"
 	"github.com/projectcalico/felix/go/datastructures/set"
-	"github.com/tigera/libcalico-go/lib/backend/api"
-	"github.com/tigera/libcalico-go/lib/backend/model"
+	"github.com/projectcalico/libcalico-go/lib/backend/api"
+	"github.com/projectcalico/libcalico-go/lib/backend/model"
 )
 
 // endpointKeys are expected to be WorkloadEndpointKey or HostEndpointKey

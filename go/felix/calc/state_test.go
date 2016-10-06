@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"github.com/projectcalico/felix/go/datastructures/set"
 	"github.com/projectcalico/felix/go/felix/proto"
-	. "github.com/tigera/libcalico-go/lib/backend/model"
+	. "github.com/projectcalico/libcalico-go/lib/backend/model"
 	"reflect"
 )
 

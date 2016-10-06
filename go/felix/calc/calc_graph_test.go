@@ -24,9 +24,9 @@ import (
 	"github.com/projectcalico/felix/go/felix/config"
 	"github.com/projectcalico/felix/go/felix/proto"
 	"github.com/projectcalico/felix/go/felix/store"
-	"github.com/tigera/libcalico-go/lib/backend/api"
-	. "github.com/tigera/libcalico-go/lib/backend/model"
-	"github.com/tigera/libcalico-go/lib/net"
+	"github.com/projectcalico/libcalico-go/lib/backend/api"
+	. "github.com/projectcalico/libcalico-go/lib/backend/model"
+	"github.com/projectcalico/libcalico-go/lib/net"
 	"reflect"
 	"strings"
 )
@@ -133,9 +133,9 @@ var hostEpNoNameId = "unnamed"
 
 // Canned tiers/policies.
 
-var order10 = float32(10)
-var order20 = float32(20)
-var order30 = float32(30)
+var order10 = float64(10)
+var order20 = float64(20)
+var order30 = float64(30)
 
 var tier1_order10 = Tier{
 	Order: &order10,
@@ -292,19 +292,19 @@ var hostEp2WithPolicy = withPolicy.withKVUpdates(
 // Policy ordering tests.  We keep the names of the policies the same but we
 // change their orders to check that order trumps name.
 var localEp1WithOneTierPolicy123 = policyOrderState(
-	[3]float32{order10, order20, order30},
+	[3]float64{order10, order20, order30},
 	[3]string{"pol-1", "pol-2", "pol-3"},
 )
 var localEp1WithOneTierPolicy321 = policyOrderState(
-	[3]float32{order30, order20, order10},
+	[3]float64{order30, order20, order10},
 	[3]string{"pol-3", "pol-2", "pol-1"},
 )
 var localEp1WithOneTierPolicyAlpha = policyOrderState(
-	[3]float32{order10, order10, order10},
+	[3]float64{order10, order10, order10},
 	[3]string{"pol-1", "pol-2", "pol-3"},
 )
 
-func policyOrderState(policyOrders [3]float32, expectedOrder [3]string) State {
+func policyOrderState(policyOrders [3]float64, expectedOrder [3]string) State {
 	policies := [3]Policy{}
 	for i := range policies {
 		policies[i] = Policy{
@@ -346,30 +346,30 @@ func policyOrderState(policyOrders [3]float32, expectedOrder [3]string) State {
 // Tier ordering tests.  We keep the names of the tiers constant but adjust
 // their orders.
 var localEp1WithTiers123 = tierOrderState(
-	[3]float32{order10, order20, order30},
+	[3]float64{order10, order20, order30},
 	[3]string{"tier-1", "tier-2", "tier-3"},
 )
 var localEp1WithTiers321 = tierOrderState(
-	[3]float32{order30, order20, order10},
+	[3]float64{order30, order20, order10},
 	[3]string{"tier-3", "tier-2", "tier-1"},
 )
 
 // These tests use the same order for each tier, checking that the name is
 // used as a tie breaker.
 var localEp1WithTiersAlpha = tierOrderState(
-	[3]float32{order10, order10, order10},
+	[3]float64{order10, order10, order10},
 	[3]string{"tier-1", "tier-2", "tier-3"},
 )
 var localEp1WithTiersAlpha2 = tierOrderState(
-	[3]float32{order20, order20, order20},
+	[3]float64{order20, order20, order20},
 	[3]string{"tier-1", "tier-2", "tier-3"},
 )
 var localEp1WithTiersAlpha3 = tierOrderState(
-	[3]float32{order20, order20, order10},
+	[3]float64{order20, order20, order10},
 	[3]string{"tier-3", "tier-1", "tier-2"},
 )
 
-func tierOrderState(tierOrders [3]float32, expectedOrder [3]string) State {
+func tierOrderState(tierOrders [3]float64, expectedOrder [3]string) State {
 	tiers := [3]Tier{}
 	for i := range tiers {
 		tiers[i] = Tier{

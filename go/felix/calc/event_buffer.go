@@ -22,9 +22,9 @@ import (
 	"github.com/projectcalico/felix/go/felix/config"
 	"github.com/projectcalico/felix/go/felix/endpoint"
 	"github.com/projectcalico/felix/go/felix/proto"
-	"github.com/tigera/libcalico-go/lib/backend/model"
-	"github.com/tigera/libcalico-go/lib/net"
-	"github.com/tigera/libcalico-go/lib/numorstring"
+	"github.com/projectcalico/libcalico-go/lib/backend/model"
+	"github.com/projectcalico/libcalico-go/lib/net"
+	"github.com/projectcalico/libcalico-go/lib/numorstring"
 	"strconv"
 	"strings"
 )

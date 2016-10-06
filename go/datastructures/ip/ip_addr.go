@@ -15,7 +15,7 @@
 package ip
 
 import (
-	calinet "github.com/tigera/libcalico-go/lib/net"
+	calinet "github.com/projectcalico/libcalico-go/lib/net"
 	"net"
 )
 

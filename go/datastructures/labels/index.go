@@ -16,7 +16,7 @@ package labels
 
 import (
 	log "github.com/Sirupsen/logrus"
-	"github.com/tigera/libcalico-go/lib/selector"
+	"github.com/projectcalico/libcalico-go/lib/selector"
 )
 
 type Index interface {

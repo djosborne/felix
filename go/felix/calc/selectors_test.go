@@ -16,7 +16,7 @@ package calc_test
 
 import (
 	log "github.com/Sirupsen/logrus"
-	"github.com/tigera/libcalico-go/lib/selector"
+	"github.com/projectcalico/libcalico-go/lib/selector"
 )
 
 func selectorId(selStr string) string {

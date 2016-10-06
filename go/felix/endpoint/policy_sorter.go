@@ -17,7 +17,7 @@ package endpoint
 import (
 	"fmt"
 	log "github.com/Sirupsen/logrus"
-	"github.com/tigera/libcalico-go/lib/backend/model"
+	"github.com/projectcalico/libcalico-go/lib/backend/model"
 	"sort"
 )
 
@@ -172,7 +172,7 @@ func (a PolicyByOrder) Less(i, j int) bool {
 type TierInfo struct {
 	Name            string
 	Valid           bool
-	Order           *float32
+	Order           *float64
 	Policies        map[model.PolicyKey]*model.Policy
 	OrderedPolicies []PolKV
 }

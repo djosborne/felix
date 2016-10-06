@@ -16,8 +16,8 @@ package calc
 
 import (
 	log "github.com/Sirupsen/logrus"
-	"github.com/tigera/libcalico-go/lib/backend/api"
-	"github.com/tigera/libcalico-go/lib/backend/model"
+	"github.com/projectcalico/libcalico-go/lib/backend/api"
+	"github.com/projectcalico/libcalico-go/lib/backend/model"
 )
 
 type ConfigBatcher struct {

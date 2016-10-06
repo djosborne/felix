@@ -21,11 +21,11 @@ import (
 	"github.com/projectcalico/felix/go/datastructures/tags"
 	"github.com/projectcalico/felix/go/felix/endpoint"
 	"github.com/projectcalico/felix/go/felix/store"
-	"github.com/tigera/libcalico-go/lib/backend/api"
-	"github.com/tigera/libcalico-go/lib/backend/model"
-	"github.com/tigera/libcalico-go/lib/hash"
-	"github.com/tigera/libcalico-go/lib/net"
-	"github.com/tigera/libcalico-go/lib/selector"
+	"github.com/projectcalico/libcalico-go/lib/backend/api"
+	"github.com/projectcalico/libcalico-go/lib/backend/model"
+	"github.com/projectcalico/libcalico-go/lib/hash"
+	"github.com/projectcalico/libcalico-go/lib/net"
+	"github.com/projectcalico/libcalico-go/lib/selector"
 )
 
 type ipSetUpdateCallbacks interface {

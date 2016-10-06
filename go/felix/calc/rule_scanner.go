@@ -17,11 +17,11 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/projectcalico/felix/go/datastructures/multidict"
 	"github.com/projectcalico/felix/go/datastructures/set"
-	"github.com/tigera/libcalico-go/lib/backend/model"
-	"github.com/tigera/libcalico-go/lib/hash"
-	"github.com/tigera/libcalico-go/lib/net"
-	"github.com/tigera/libcalico-go/lib/numorstring"
-	"github.com/tigera/libcalico-go/lib/selector"
+	"github.com/projectcalico/libcalico-go/lib/backend/model"
+	"github.com/projectcalico/libcalico-go/lib/hash"
+	"github.com/projectcalico/libcalico-go/lib/net"
+	"github.com/projectcalico/libcalico-go/lib/numorstring"
+	"github.com/projectcalico/libcalico-go/lib/selector"
 )
 
 // RuleScanner calculates the active set of selectors and tags from the current set of policies/profiles.

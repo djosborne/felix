@@ -18,12 +18,12 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	"github.com/tigera/libcalico-go/lib/ginkgoutils"
+	"github.com/projectcalico/libcalico-go/lib/testutils"
 	"testing"
 )
 
 func init() {
-	ginkgoutils.HookLogrusForGinkgo()
+	testutils.HookLogrusForGinkgo()
 }
 
 func TestMultidict(t *testing.T) {
