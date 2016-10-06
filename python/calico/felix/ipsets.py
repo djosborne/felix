@@ -122,22 +122,22 @@ class IpsetManager(ReferenceManager):
         # Add in the pre-calculated IPs from the etcd driver.
         _log.debug("Incorporating pre-calculated ipsets")
         for sel_id, added_ips in self._pre_calc_added_ips_by_id.iteritems():
-            self._pre_calc_ipsets_by_id[sel_id].update(added_ips)
+            self._pre_calc_ipsets_by_id[sel_id].update(added_ips) #uncovered
         for sel_id, removed_ips in self._pre_calc_removed_ips_by_id.iteritems():
-            self._pre_calc_ipsets_by_id[sel_id].difference_update(removed_ips)
+            self._pre_calc_ipsets_by_id[sel_id].difference_update(removed_ips) #uncovered
             if not self._pre_calc_ipsets_by_id[sel_id]:
                 del self._pre_calc_ipsets_by_id[sel_id]
 
         num_updates = 0
         for tag_id, removed_ips in self._pre_calc_removed_ips_by_id.iteritems():
-            if self._is_starting_or_live(tag_id):
+            if self._is_starting_or_live(tag_id): #uncovered
                 assert self._datamodel_in_sync
                 active_ipset = self.objects_by_id[tag_id]
                 active_ipset.remove_members(removed_ips, async=True)
                 num_updates += 1
             self._maybe_yield()
         for tag_id, added_ips in self._pre_calc_added_ips_by_id.iteritems():
-            if self._is_starting_or_live(tag_id):
+            if self._is_starting_or_live(tag_id): #uncovered
                 assert self._datamodel_in_sync
                 active_ipset = self.objects_by_id[tag_id]
                 active_ipset.add_members(added_ips, async=True)
@@ -148,7 +148,7 @@ class IpsetManager(ReferenceManager):
         self._pre_calc_added_ips_by_id.clear()
 
         if num_updates > 0:
-            _log.info("Sent %s updates to updated tags", num_updates)
+            _log.info("Sent %s updates to updated tags", num_updates) #uncovered
 
     @actor_message()
     def on_datamodel_in_sync(self):
@@ -168,8 +168,11 @@ class IpsetManager(ReferenceManager):
         # Filter deletion candidates to only ipsets that we could have created.
         felix_ipsets = set()
         for ipset in all_ipsets:
+            print "ipset: %s" % ipset
             for prefix in ALL_FELIX_PREFIXES[self.ip_type]:
+                print "prefix: %s" % prefix
                 if ipset.startswith(prefix):
+                    print "matched"
                     felix_ipsets.add(ipset)
 
         whitelist = set()
@@ -182,6 +185,7 @@ class IpsetManager(ReferenceManager):
             # Ask the ipset for all the names it may use and whitelist.
             whitelist.update(ipset.owned_ipset_names())
         _log.debug("Whitelisted ipsets: %s", whitelist)
+        print "Whitelisted ipsets: %s" % whitelist
         ipsets_to_delete = felix_ipsets - whitelist
         _log.debug("Deleting ipsets: %s", ipsets_to_delete)
         # Delete the ipsets before we return.  We can't queue these up since
@@ -198,7 +202,7 @@ class IpsetManager(ReferenceManager):
                 _log.info("ipsets to delete: %s", ipsets_to_delete)
 
     @actor_message()
-    def on_ipset_update(self, ipset_id, members):
+    def on_ipset_update(self, ipset_id, members): #uncovered
         _log.debug("IP set %s now active.", ipset_id)
         filtered_members = self._pre_calc_ipsets_by_id[ipset_id]
         filtered_members.clear()
@@ -217,7 +221,7 @@ class IpsetManager(ReferenceManager):
             ipset.replace_members(frozenset(filtered_members), async=True)
 
     @actor_message()
-    def on_ipset_removed(self, ipset_id):
+    def on_ipset_removed(self, ipset_id): #uncovered
         _log.debug("IP set %s no longer active.", ipset_id)
 
         self._pre_calc_ipsets_by_id.pop(ipset_id, None)
@@ -229,7 +233,7 @@ class IpsetManager(ReferenceManager):
             ipset.replace_members(frozenset(), async=True)
 
     @actor_message()
-    def on_ipset_delta_update(self, ipset_id, added_ips, removed_ips):
+    def on_ipset_delta_update(self, ipset_id, added_ips, removed_ips): #uncovered
         skipped = 0
         processed = 0
         for ip in added_ips:
@@ -343,7 +347,7 @@ class IpsetActor(Actor):
     def _sync_to_ipset(self):
         _log.debug("Syncing %s to kernel", self.name)
         if self.changes is None:
-            _log.warning("Haven't received initial snapshot yet.")
+            _log.warning("Haven't received initial snapshot yet.") #uncovered
             return
 
         if self.changes.resulting_size > self._ipset.max_elem:
@@ -456,7 +460,7 @@ class Ipset(object):
                 ["ipset", "list",
                  self.temp_set_name if temp_set else self.set_name]
             )
-        except FailedSystemCall as e:
+        except FailedSystemCall as e: #uncovered
             if e.retcode == 1 and "does not exist" in e.stderr:
                 return False
             else:
@@ -511,7 +515,7 @@ class Ipset(object):
         if not self.exists():
             # Ensure the main set exists so we can re-use the atomic swap
             # code below.
-            _log.debug("Main set doesn't exist, creating it...")
+            _log.debug("Main set doesn't exist, creating it...") #uncovered
             input_lines = [self._create_cmd(self.set_name)]
         else:
             # Avoid trying to create the main set in case we try to create it
