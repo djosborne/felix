@@ -48,10 +48,10 @@ func (c *Container) Stop() {
 	if c == nil {
 		log.Info("Stop no-op because nil container")
 	} else if c.runCmd == nil {
-		log.WithField("container", c).Info("Stop no-op because container is not running")
+		log.WithField("container", c.Name).Info("Stop no-op because container is not running")
 	} else {
 		log.WithField("container", c).Info("Stop")
-		c.runCmd.Process.Signal(os.Interrupt)
+		utils.Run("docker", "stop", c.Name)
 		c.WaitNotRunning(10 * time.Second)
 	}
 }
@@ -63,7 +63,7 @@ func Run(namePrefix string, args ...string) (c *Container) {
 	c = &Container{Name: fmt.Sprintf("%v-%d-%d-felixfv", namePrefix, os.Getpid(), containerIdx)}
 
 	// Prep command to run the container.
-	log.WithField("container", c).Info("About to run container")
+	log.WithField("container", c.Name).Info("About to run container")
 	runArgs := append([]string{"run", "--rm", "--name", c.Name, "--hostname", c.Name}, args...)
 	c.runCmd = utils.Command("docker", runArgs...)
 
@@ -172,7 +172,7 @@ func (c *Container) WaitNotRunning(timeout time.Duration) {
 			break
 		}
 		if time.Since(start) > timeout {
-			log.Panic("Timed out waiting for container not to be listed.")
+			log.WithField("container", c.Name).Panic("Timed out waiting for container not to be listed.")
 		}
 	}
 }
